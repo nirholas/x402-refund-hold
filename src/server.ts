@@ -3,6 +3,7 @@ import express from "express";
 import { readFileSync } from "node:fs";
 import { activeRails, mountSolanaCheckout, paywall, usingSuiteDefaultPayTo } from "./payments.js";
 import { refundHold } from "./middleware.js";
+import { ROUTE_SCHEMAS } from "./schemas.js";
 import { executorFromEnv } from "./executor.js";
 import { verify } from "./sign.js";
 import { tryBooking, type BookingRequest } from "./service.js";
@@ -28,7 +29,11 @@ const PRICES: Record<string, string> = {
   "POST /demo/book": "$0.01",
 };
 
-app.use(paywall(PRICES, { service: "x402-refund-hold" }));
+// `schemas` publishes each paid route's request/response contract inside the 402
+// challenge (`accepts[].outputSchema`), so an agent that hits the paywall knows
+// how to call the route and what it will get back without reading the OpenAPI
+// document first. Generated from openapi.json — see src/schemas.ts.
+app.use(paywall(PRICES, { service: "x402-refund-hold", schemas: ROUTE_SCHEMAS }));
 
 const holds = refundHold({ executor: executorFromEnv() });
 

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="x402-refund-hold">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1200" height="8" fill="#0052ff"/>
+  <rect x="90" y="86" width="88" height="88" rx="20" fill="#0052ff"/>
+  <text x="134" y="132" text-anchor="middle" dominant-baseline="central"
+        font-family="ui-sans-serif, system-ui, Helvetica, Arial, sans-serif"
+        font-size="46" font-weight="700" fill="#ffffff">↺</text>
+  <text x="90" y="272" font-family="ui-sans-serif, system-ui, Helvetica, Arial, sans-serif"
+        font-size="64" font-weight="700" fill="#e6edf3">x402-refund-hold</text>
+  <text x="90" y="344" font-family="ui-sans-serif, system-ui, Helvetica, Arial, sans-serif"
+        font-size="32" fill="#9198a1"><tspan x="90" dy="0">The refundable-hold pattern for x402 merchants, as</tspan><tspan x="90" dy="46">drop-in Express middleware. Charge a hold,</tspan><tspan x="90" dy="46">auto-refund on failure, ledger included. Pay in USDC</tspan></text>
+  <text x="90" y="556" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+        font-size="26" fill="#0052ff">HTTP 402 · USDC on Base or Solana · x402</text>
+</svg>

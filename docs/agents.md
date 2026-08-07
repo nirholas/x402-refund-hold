@@ -99,7 +99,22 @@ At `$0.01` per booking attempt, a failed call costs you nothing net once the ref
 
 See [`examples/mcp-tool.md`](https://github.com/nirholas/x402-refund-hold/blob/main/examples/mcp-tool.md) for a complete MCP server exposing `book_with_refund_protection` as a Claude tool, including the payment wrapper and how to surface refunds to the model.
 
-## 6. Getting listed
+## 6. Protocol version and schemas
+
+Every `accepts` entry carries `outputSchema.input` (how to build the request) and
+`outputSchema.output` (the JSON Schema of the 200 body), generated from
+`openapi.json`. A 402 is therefore enough on its own: pay, then call the route
+exactly as `input` describes and parse what `output` promises — no second fetch
+of the spec required.
+
+The challenges are **x402 v1** (`"x402Version": 1`), the version every deployed
+`x402-fetch` / `x402` client speaks today, including the examples in this repo.
+x402 v2 — CAIP-2 network ids, and `extensions.bazaar.schema` in place of
+`accepts[].outputSchema` — is a planned future upgrade for agentcash
+compatibility. Until then, a v2-only client should treat this service as v1;
+nothing else about the flow changes.
+
+## 7. Getting listed
 
 If you deploy this, register it so other agents can find it:
 
