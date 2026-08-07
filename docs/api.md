@@ -9,7 +9,7 @@ Two surfaces: the **HTTP API** of the demo server, and the **library** you insta
 
 ## HTTP API
 
-Base URL: `http://localhost:4021` in dev, your origin in production.
+Base URL: `http://localhost:4031` in dev, your origin in production.
 
 ### `POST /demo/book` — $0.01
 

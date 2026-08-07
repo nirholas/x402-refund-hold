@@ -19,7 +19,7 @@ import { wrapFetchWithPayment, decodeXPaymentResponse } from "x402-fetch";
 import { privateKeyToAccount } from "viem/accounts";
 import { z } from "zod";
 
-const BASE_URL = process.env.REFUND_HOLD_URL ?? "http://localhost:4021";
+const BASE_URL = process.env.REFUND_HOLD_URL ?? "http://localhost:4031";
 
 // The agent's wallet. Cap what a single call may ever sign — 0.10 USDC here.
 const account = privateKeyToAccount(process.env.PRIVATE_KEY as `0x${string}`);
@@ -97,7 +97,7 @@ await server.connect(new StdioServerTransport());
       "args": ["tsx", "/absolute/path/to/mcp-refund-hold.ts"],
       "env": {
         "PRIVATE_KEY": "0xYourAgentWalletKey",
-        "REFUND_HOLD_URL": "http://localhost:4021"
+        "REFUND_HOLD_URL": "http://localhost:4031"
       }
     }
   }

@@ -8,7 +8,7 @@
     "contact": { "name": "nirholas", "email": "nichxbt@gmail.com", "url": "https://github.com/nirholas/x402-refund-hold" }
   },
   "servers": [
-    { "url": "http://localhost:4021", "description": "Local dev server" }
+    { "url": "http://localhost:4031", "description": "Local dev server" }
   ],
   "tags": [
     { "name": "paid", "description": "Routes behind the x402 dual-rail paywall" },
@@ -166,7 +166,7 @@
                   "scheme": "exact",
                   "network": "base-sepolia",
                   "maxAmountRequired": "10000",
-                  "resource": "http://localhost:4021/demo/book",
+                  "resource": "http://localhost:4031/demo/book",
                   "description": "x402-refund-hold: POST /demo/book",
                   "mimeType": "application/json",
                   "payTo": "0x40252CFDF8B20Ed757D61ff157719F33Ec332402",
@@ -178,7 +178,7 @@
                   "scheme": "exact",
                   "network": "solana",
                   "maxAmountRequired": "10000",
-                  "resource": "http://localhost:4021/demo/book",
+                  "resource": "http://localhost:4031/demo/book",
                   "description": "x402-refund-hold: POST /demo/book",
                   "mimeType": "application/json",
                   "payTo": "WwwuGbqHrwF5RG89KhUbmRWEvjnRH9k5kVM5p7T3WwW",

@@ -36,7 +36,7 @@ npm run dev
 ```
 
 ```
-x402-refund-hold demo server on http://localhost:4021
+x402-refund-hold demo server on http://localhost:4031
 
 Payment rails (client picks one):
   evm     base-sepolia   USDC → 0x40252CFDF8B20Ed757D61ff157719F33Ec332402
@@ -52,7 +52,7 @@ Paid routes:
 ## 4. Your first 402
 
 ```bash
-curl -s -X POST localhost:4021/demo/book \
+curl -s -X POST localhost:4031/demo/book \
   -H 'content-type: application/json' -d '{}' | jq
 ```
 
@@ -113,7 +113,7 @@ X-PAYMENT-RESPONSE: { success: true, rail: 'evm', network: 'base-sepolia', trans
 Check the ledger independently:
 
 ```bash
-curl -s localhost:4021/holds/hold_9f0c2c0e-… | jq .hold.status   # "captured"
+curl -s localhost:4031/holds/hold_9f0c2c0e-… | jq .hold.status   # "captured"
 ```
 
 ## 7. Now make it fail

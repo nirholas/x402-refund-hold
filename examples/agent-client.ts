@@ -12,7 +12,7 @@
 import { privateKeyToAccount } from "viem/accounts";
 import { wrapFetchWithPayment, decodeXPaymentResponse } from "x402-fetch";
 
-const BASE_URL = process.env.BASE_URL ?? "http://localhost:4021";
+const BASE_URL = process.env.BASE_URL ?? "http://localhost:4031";
 const SIMULATE = process.env.SIMULATE ?? "success";
 const body = JSON.stringify({ name: "Agent Guest", partySize: 2, simulate: SIMULATE });
 

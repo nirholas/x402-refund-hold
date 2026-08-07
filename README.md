@@ -33,7 +33,7 @@ npm run dev
 
 ```bash
 # 1. Unpaid → 402 listing BOTH rails
-curl -s -X POST localhost:4021/demo/book -H 'content-type: application/json' -d '{}' | jq .accepts
+curl -s -X POST localhost:4031/demo/book -H 'content-type: application/json' -d '{}' | jq .accepts
 
 # 2. Paid (any x402 client) → an artifact, whatever happens
 npm run client                       # success path

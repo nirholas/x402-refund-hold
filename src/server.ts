@@ -19,7 +19,7 @@ import { tryBooking, type BookingRequest } from "./service.js";
  * picks one.
  */
 
-const port = Number(process.env.PORT || 4021);
+const port = Number(process.env.PORT || 4031);
 
 const app = express();
 app.use(express.json());

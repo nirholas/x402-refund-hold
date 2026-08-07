@@ -1,11 +1,11 @@
 # Raw curl walkthrough — 402 → pay → 200
 
-Everything below runs against `npm run dev` on `localhost:4021`. It shows the wire format with nothing hiding it.
+Everything below runs against `npm run dev` on `localhost:4031`. It shows the wire format with nothing hiding it.
 
 ## 1. Ask without paying
 
 ```bash
-curl -i -s -X POST localhost:4021/demo/book \
+curl -i -s -X POST localhost:4031/demo/book \
   -H 'content-type: application/json' \
   -d '{"name":"Agent Guest","partySize":2}'
 ```
@@ -25,7 +25,7 @@ Access-Control-Expose-Headers: x-payment-response
       "scheme": "exact",
       "network": "base-sepolia",
       "maxAmountRequired": "10000",
-      "resource": "http://localhost:4021/demo/book",
+      "resource": "http://localhost:4031/demo/book",
       "description": "x402-refund-hold: POST /demo/book",
       "mimeType": "application/json",
       "payTo": "0x40252CFDF8B20Ed757D61ff157719F33Ec332402",
@@ -37,7 +37,7 @@ Access-Control-Expose-Headers: x-payment-response
       "scheme": "exact",
       "network": "solana",
       "maxAmountRequired": "10000",
-      "resource": "http://localhost:4021/demo/book",
+      "resource": "http://localhost:4031/demo/book",
       "description": "x402-refund-hold: POST /demo/book",
       "mimeType": "application/json",
       "payTo": "WwwuGbqHrwF5RG89KhUbmRWEvjnRH9k5kVM5p7T3WwW",
@@ -59,7 +59,7 @@ Two `accepts` entries — Base and Solana — for the same $0.01. `maxAmountRequ
 Just the rails:
 
 ```bash
-curl -s -X POST localhost:4021/demo/book -H 'content-type: application/json' -d '{}' \
+curl -s -X POST localhost:4031/demo/book -H 'content-type: application/json' -d '{}' \
   | jq -r '.accepts[] | "\(.network)\t$\(.maxAmountRequired|tonumber/1000000)\t\(.payTo)"'
 ```
 
@@ -91,7 +91,7 @@ Decoded, the EVM payload looks like this:
 ## 3. Retry with the header
 
 ```bash
-curl -i -s -X POST localhost:4021/demo/book \
+curl -i -s -X POST localhost:4031/demo/book \
   -H 'content-type: application/json' \
   -H "X-PAYMENT: $X_PAYMENT" \
   -d '{"name":"Agent Guest","partySize":2}'
@@ -126,7 +126,7 @@ echo 'eyJzdWNjZXNzIjp0cnVlLCJyYWlsIjoiZXZtIiwi…' | base64 -d | jq
 Same call, `simulate: "failure"`:
 
 ```bash
-curl -s -X POST localhost:4021/demo/book \
+curl -s -X POST localhost:4031/demo/book \
   -H 'content-type: application/json' -H "X-PAYMENT: $X_PAYMENT" \
   -d '{"simulate":"failure"}' | jq
 ```
@@ -144,8 +144,8 @@ curl -s -X POST localhost:4021/demo/book \
 Still `200`. Verify the merchant really signed it:
 
 ```bash
-curl -s -X POST localhost:4021/verify -H 'content-type: application/json' \
-  -d "$(curl -s -X POST localhost:4021/demo/book -H 'content-type: application/json' \
+curl -s -X POST localhost:4031/verify -H 'content-type: application/json' \
+  -d "$(curl -s -X POST localhost:4031/demo/book -H 'content-type: application/json' \
         -H "X-PAYMENT: $X_PAYMENT" -d '{"simulate":"failure"}' | jq -c .refund)" | jq
 # { "valid": true }
 ```
@@ -153,16 +153,16 @@ curl -s -X POST localhost:4021/verify -H 'content-type: application/json' \
 ## 5. Free routes
 
 ```bash
-curl -s localhost:4021/holds/hold_9f0c2c0e-… | jq .hold.status   # "captured"
-curl -s localhost:4021/health | jq .rails
-curl -s localhost:4021/.well-known/x402 | jq '.resources[].price'
+curl -s localhost:4031/holds/hold_9f0c2c0e-… | jq .hold.status   # "captured"
+curl -s localhost:4031/health | jq .rails
+curl -s localhost:4031/.well-known/x402 | jq '.resources[].price'
 ```
 
 ## 6. Errors you'll actually hit
 
 ```bash
 # Garbage payment header
-curl -s -X POST localhost:4021/demo/book -H 'X-PAYMENT: not-base64' \
+curl -s -X POST localhost:4031/demo/book -H 'X-PAYMENT: not-base64' \
   -H 'content-type: application/json' -d '{}' | jq -r .error
 # → invalid X-PAYMENT header: …
 
