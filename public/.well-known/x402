@@ -1,0 +1,117 @@
+{
+  "x402Version": 1,
+  "name": "x402-refund-hold",
+  "description": "The $0.01 refundable-hold pattern as drop-in Express middleware — charge a hold, auto-refund on failure, ledger included. Pay in USDC on Base or Solana; your client picks the rail.",
+  "contact": "nichxbt@gmail.com",
+  "repository": "https://github.com/nirholas/x402-refund-hold",
+  "documentation": "https://nirholas.github.io/x402-refund-hold/",
+  "skill": "https://raw.githubusercontent.com/nirholas/x402-refund-hold/main/skill.md",
+  "rails": [
+    {
+      "rail": "evm",
+      "network": "base-sepolia",
+      "asset": "USDC",
+      "assetAddress": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+      "payTo": "0x40252CFDF8B20Ed757D61ff157719F33Ec332402",
+      "facilitator": "https://x402.org/facilitator"
+    },
+    {
+      "rail": "solana",
+      "network": "solana",
+      "asset": "USDC",
+      "assetAddress": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "payTo": "WwwuGbqHrwF5RG89KhUbmRWEvjnRH9k5kVM5p7T3WwW",
+      "facilitator": "https://facilitator.payai.network"
+    }
+  ],
+  "resources": [
+    {
+      "resource": "POST /demo/book",
+      "description": "Demo booking behind a refundable hold. Success returns a signed confirmation plus the captured hold; any failure returns a signed refund record — always in the 200 body, never a bare error.",
+      "price": "$0.01",
+      "networks": ["base-sepolia", "solana"],
+      "asset": "USDC",
+      "outputSchema": {
+        "type": "object",
+        "required": ["outcome"],
+        "properties": {
+          "outcome": { "type": "string", "enum": ["confirmed", "refunded", "rejected"] },
+          "confirmation": {
+            "type": "object",
+            "properties": {
+              "reservationId": { "type": "string" },
+              "name": { "type": "string" },
+              "confirmedTime": { "type": "string", "format": "date-time" },
+              "partySize": { "type": "number" },
+              "venue": { "type": "string" },
+              "bookedAt": { "type": "string", "format": "date-time" }
+            }
+          },
+          "hold": {
+            "type": "object",
+            "description": "Signed hold record: { payload, signature, algorithm }",
+            "properties": {
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "status": { "type": "string", "enum": ["held", "captured", "voided", "refunded", "settled"] },
+                  "payer": { "type": "string" },
+                  "amountUsd": { "type": "number" },
+                  "rail": { "type": "string", "enum": ["evm", "solana", "none"] },
+                  "network": { "type": "string" },
+                  "paymentTx": { "type": "string" },
+                  "refundableUntil": { "type": "string", "format": "date-time" }
+                }
+              },
+              "signature": { "type": "string" },
+              "algorithm": { "type": "string", "enum": ["HMAC-SHA256"] }
+            }
+          },
+          "refund": {
+            "type": "object",
+            "description": "Signed refund record: { payload, signature, algorithm }",
+            "properties": {
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "type": { "type": "string", "enum": ["refund"] },
+                  "holdId": { "type": "string" },
+                  "payer": { "type": "string" },
+                  "amountUsd": { "type": "number" },
+                  "rail": { "type": "string", "enum": ["evm", "solana", "none"] },
+                  "network": { "type": "string" },
+                  "reason": { "type": "string" },
+                  "mode": { "type": "string", "enum": ["onchain", "claim"] },
+                  "txHash": { "type": "string" },
+                  "issuedAt": { "type": "string", "format": "date-time" }
+                }
+              },
+              "signature": { "type": "string" },
+              "algorithm": { "type": "string", "enum": ["HMAC-SHA256"] }
+            }
+          },
+          "reason": { "type": "string" }
+        }
+      }
+    }
+  ],
+  "free": [
+    { "resource": "GET /holds/:id", "description": "Hold status from the refund ledger" },
+    { "resource": "POST /verify", "description": "Verify the HMAC signature on any record issued by this service" },
+    { "resource": "GET /health", "description": "Liveness plus the payment rails currently advertised" }
+  ],
+  "library": {
+    "npm": "x402-refund-hold",
+    "exports": [
+      "paywall",
+      "refundHold",
+      "RefundLedger",
+      "createUsdcRefundExecutor",
+      "createSolanaUsdcRefundExecutor",
+      "createDualRailRefundExecutor",
+      "sign",
+      "verify"
+    ]
+  }
+}
