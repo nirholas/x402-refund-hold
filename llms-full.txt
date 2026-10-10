@@ -1,6 +1,10 @@
 # x402-refund-hold
 
-**The refundable-hold pattern for x402, as drop-in Express middleware.** Charge a hold, auto-refund on failure, ledger included — and every outcome comes back as a signed record in the 200 body.
+> The $0.01 refundable-hold pattern as drop-in Express middleware: charge a hold, auto-refund on failure, ledger included
+
+# x402-refund-hold
+
+**The refundable-hold pattern for x402, as drop-in Express middleware.** Charge a hold, auto-refund on failure, ledger included: and every outcome comes back as a signed record in the 200 body.
 
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
 [![x402](https://img.shields.io/badge/x402-payments-0052ff.svg)](https://x402.org)
@@ -12,15 +16,15 @@ npm install x402-refund-hold
 
 ## The problem
 
-x402's `exact` scheme is **pay-then-serve**. By the time your handler runs, the USDC has already moved. So what happens when the thing you just sold doesn't materialise — no availability, upstream 500, the browser flow timed out?
+x402's `exact` scheme is **pay-then-serve**. By the time your handler runs, the USDC has already moved. So what happens when the thing you just sold doesn't materialise: no availability, upstream 500, the browser flow timed out?
 
-Returning `409 Sorry` is not an answer. You took the money. And the caller is an autonomous agent: it needs *proof* of the refund, in the response, right now — not an email to a human three days later.
+Returning `409 Sorry` is not an answer. You took the money. And the caller is an autonomous agent: it needs *proof* of the refund, in the response, right now: not an email to a human three days later.
 
 `refundHold()` makes that the default. One line of middleware, and every paid request resolves to exactly one signed artifact: a captured hold with your confirmation attached, or a refund record the customer can verify and act on.
 
 ## Why x402 for this
 
-Refunds are the part of per-request payment everyone skips. With API keys and monthly invoices you can absorb a failed call quietly and reconcile later; with x402 the money is already on-chain and the customer is a program that will keep score. Per-request payment only works if per-request *un*-payment works too — that's this package.
+Refunds are the part of per-request payment everyone skips. With API keys and monthly invoices you can absorb a failed call quietly and reconcile later; with x402 the money is already on-chain and the customer is a program that will keep score. Per-request payment only works if per-request *un*-payment works too: that's this package.
 
 ## Quickstart
 
@@ -49,7 +53,7 @@ import { paywall, refundHold, executorFromEnv } from "x402-refund-hold";
 const app = express();
 app.use(express.json());
 
-// 1. Dual-rail paywall — the 402 offers Base *and* Solana; the client picks.
+// 1. Dual-rail paywall: the 402 offers Base *and* Solana; the client picks.
 app.use(paywall({ "POST /book": "$0.01" }, { service: "my-merchant" }));
 
 // 2. Refundable holds on top.
@@ -73,11 +77,11 @@ app.post("/book", holds, async (req, res) => {
 | `refundHold(options)` | The hold middleware. Attaches `req.hold`; returns an object carrying `.ledger` and `.stop()`. |
 | `req.hold.capture({ artifact, refundableForMs })` | Delivered. Opens the refundable window. Returns a **signed** hold record. |
 | `req.hold.refund(reason)` | Money back on the rail it came in on. Returns a **signed** refund record. |
-| `req.hold.void(reason)` | Only for holds that never settled — throws if the payment cleared, so you can't strand a customer by accident. |
+| `req.hold.void(reason)` | Only for holds that never settled: throws if the payment cleared, so you can't strand a customer by accident. |
 | `RefundLedger` | File-backed hold ledger: `open`, `capture`, `refund`, `void`, `settle`, `list`, `sweepExpired`, `digest`. |
 | `createUsdcRefundExecutor` / `createSolanaUsdcRefundExecutor` / `createDualRailRefundExecutor` | On-chain refunds per rail, or routed automatically. |
 | `executorFromEnv()` | Builds the right executor from env; `undefined` (claim mode) when no key is set. |
-| `sign` / `verify` / `signed` | HMAC-SHA256 over canonical JSON — how records are made verifiable. |
+| `sign` / `verify` / `signed` | HMAC-SHA256 over canonical JSON: how records are made verifiable. |
 | `paymentReceipt(res)` | The settlement receipt (rail, network, tx hash/signature, payer) for the current request. |
 
 ### Hold lifecycle
@@ -92,7 +96,7 @@ app.post("/book", holds, async (req, res) => {
   voided                    refunded
 ```
 
-`sweepExpired()` runs on a timer (`sweepIntervalMs`, default 60s): any captured hold whose `refundableUntil` passes without being settled is refunded automatically. That is the "auto-refund if never served" guarantee — it survives your process forgetting.
+`sweepExpired()` runs on a timer (`sweepIntervalMs`, default 60s): any captured hold whose `refundableUntil` passes without being settled is refunded automatically. That is the "auto-refund if never served" guarantee: it survives your process forgetting.
 
 ## Pay on either rail
 
@@ -103,7 +107,7 @@ Every 402 advertises **both** rails and the client picks:
 | EVM | `base-sepolia` (or `base`) | USDC | `0x40252CFDF8B20Ed757D61ff157719F33Ec332402` | `x402.org/facilitator` |
 | Solana | `solana` (or `solana-devnet`) | USDC | `WwwuGbqHrwF5RG89KhUbmRWEvjnRH9k5kVM5p7T3WwW` | `facilitator.payai.network` |
 
-Refunds go back on the rail the payment arrived on — `hold.rail` records which one, and `createDualRailRefundExecutor` routes accordingly. On Solana the facilitator's `extra.feePayer` sponsors the network fee, so payers need only USDC, no SOL.
+Refunds go back on the rail the payment arrived on: `hold.rail` records which one, and `createDualRailRefundExecutor` routes accordingly. On Solana the facilitator's `extra.feePayer` sponsors the network fee, so payers need only USDC, no SOL.
 
 Set `PAY_TO_ADDRESS` / `SOLANA_PAY_TO_ADDRESS` to receive funds yourself; the defaults above are the suite's public receive addresses so the demo runs unconfigured.
 
@@ -129,29 +133,29 @@ If the handler fails, the same 200 carries the signed refund record instead of t
 
 ## Real backend / API keys
 
-Nothing here needs an API key. The booking service in `src/service.ts` is a deterministic demo (its outcome is driven by the request's `simulate` field) — the *library* is the product, and it is fully real.
+Nothing here needs an API key. The booking service in `src/service.ts` is a deterministic demo (its outcome is driven by the request's `simulate` field): the *library* is the product, and it is fully real.
 
 The one thing env unlocks is on-chain refunds:
 
 | env | effect |
 |---|---|
-| *(unset)* | Refunds are HMAC-signed **claims** — recorded in the ledger, settled by you out-of-band. `mode: "claim"`. |
+| *(unset)* | Refunds are HMAC-signed **claims**: recorded in the ledger, settled by you out-of-band. `mode: "claim"`. |
 | `REFUND_PRIVATE_KEY` | Real ERC-20 USDC transfers back to the payer on Base. `mode: "onchain"` with a `txHash`. |
 | `SOLANA_REFUND_SECRET_KEY` | Real SPL USDC transfers back on Solana. |
 
-Set both to cover both rails. See `.env.example` — every variable is commented.
+Set both to cover both rails. See `.env.example`: every variable is commented.
 
 ## For AI agents
 
-- **`skill.md`** (repo root) — the agent-facing contract: endpoints, prices, response schemas, error codes.
-- **`/.well-known/x402`** — machine-readable manifest, served by the running app and committed at `public/.well-known/x402`.
-- **`openapi.json`** — OpenAPI 3.1 including the 402 responses and `PaymentRequirements` schema.
-- **MCP** — `examples/mcp-tool.md` shows how to expose this as a Claude tool.
-- **Discovery** — list your deployment on [x402scan.com](https://x402scan.com), the x402 Bazaar, and [agentic.market](https://agentic.market); they index the `.well-known/x402` format above.
+- **`skill.md`** (repo root): the agent-facing contract: endpoints, prices, response schemas, error codes.
+- **`/.well-known/x402`**: machine-readable manifest, served by the running app and committed at `public/.well-known/x402`.
+- **`openapi.json`**: OpenAPI 3.1 including the 402 responses and `PaymentRequirements` schema.
+- **MCP**: `examples/mcp-tool.md` shows how to expose this as a Claude tool.
+- **Discovery**: list your deployment on [x402scan.com](https://x402scan.com), the x402 Bazaar, and [agentic.market](https://agentic.market); they index the `.well-known/x402` format above.
 
 ## Docs
 
-Full docs: **https://nirholas.github.io/x402-refund-hold/** — [tutorial](https://nirholas.github.io/x402-refund-hold/tutorial), [API reference](https://nirholas.github.io/x402-refund-hold/api), [for agents](https://nirholas.github.io/x402-refund-hold/agents).
+Full docs: **https://nirholas.github.io/x402-refund-hold/**: [tutorial](https://nirholas.github.io/x402-refund-hold/tutorial), [API reference](https://nirholas.github.io/x402-refund-hold/api), [for agents](https://nirholas.github.io/x402-refund-hold/agents).
 
 ## Support
 
@@ -161,31 +165,8 @@ Part of the [x402 Suite](https://github.com/nirholas/x402-suite).
 
 ## License
 
-Apache-2.0 — see [LICENSE](./LICENSE).
+Apache-2.0: see [LICENSE](./LICENSE).
 
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=nirholas/x402-refund-hold&type=Date)](https://www.star-history.com/#nirholas/x402-refund-hold&Date)
-
-<!-- three.ws:growth -->
-## Support the project
-
-If x402-refund-hold saves you time, **[star it on GitHub](https://github.com/nirholas/x402-refund-hold)**. Stars are how other developers and AI agents find the repositories worth trusting, and they cost you one click.
-
-Know someone who would use it? [Post on X](https://twitter.com/intent/tweet?text=x402-refund-hold%3A%20The%20%240.01%20refundable-hold%20pattern%20as%20drop-in%20Express%20middleware%3A%20charge%20a%20hold%2C%20auto-refund%20on&url=https%3A%2F%2Fgithub.com%2Fnirholas%2Fx402-refund-hold) · [Share on Bluesky](https://bsky.app/intent/compose?text=x402-refund-hold%3A%20The%20%240.01%20refundable-hold%20pattern%20as%20drop-in%20Express%20middleware%3A%20charge%20a%20hold%2C%20auto-refund%20on%20https%3A%2F%2Fgithub.com%2Fnirholas%2Fx402-refund-hold) · [Share on LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fgithub.com%2Fnirholas%2Fx402-refund-hold) · [Submit to Hacker News](https://news.ycombinator.com/submitlink?u=https%3A%2F%2Fgithub.com%2Fnirholas%2Fx402-refund-hold&t=x402-refund-hold%3A%20The%20%240.01%20refundable-hold%20pattern%20as%20drop-in%20Express%20middleware%3A%20charge%20a%20hold%2C%20auto-refund%20on) · [Share on Reddit](https://www.reddit.com/submit?url=https%3A%2F%2Fgithub.com%2Fnirholas%2Fx402-refund-hold&title=x402-refund-hold%3A%20The%20%240.01%20refundable-hold%20pattern%20as%20drop-in%20Express%20middleware%3A%20charge%20a%20hold%2C%20auto-refund%20on)
-
-## Built for AI agents too
-
-Coding agents and LLM tooling can read this repo directly: [AGENTS.md](./AGENTS.md), [llms.txt](./llms.txt), [llms-full.txt](./llms-full.txt). Point an agent at `https://github.com/nirholas/x402-refund-hold` and it has the context it needs.
-
-## More from the same author
-
-- [All repositories by nirholas](https://github.com/nirholas/nirholas#readme): the full catalog, grouped by topic
-- [three.ws](https://three.ws): the platform for 3D AI agents with Solana wallets, a skill marketplace and x402 payments
-- Questions or ideas: [open an issue](https://github.com/nirholas/x402-refund-hold/issues) or [start a discussion](https://github.com/nirholas/x402-refund-hold/discussions)
-
-## Contributors
-
-[![Contributors](https://contrib.rocks/image?repo=nirholas/x402-refund-hold)](https://github.com/nirholas/x402-refund-hold/graphs/contributors)
-
-<!-- /three.ws:growth -->
