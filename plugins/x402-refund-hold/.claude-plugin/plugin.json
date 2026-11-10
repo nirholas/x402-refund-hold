@@ -1,0 +1,19 @@
+{
+  "name": "x402-refund-hold",
+  "version": "0.1.0",
+  "description": "The $0.01 refundable-hold pattern for x402 as Express middleware: charge a hold, auto-refund on failure, with a ledger.",
+  "author": {
+    "name": "nirholas"
+  },
+  "repository": "https://github.com/nirholas/x402-refund-hold",
+  "homepage": "https://nirholas.github.io/x402-refund-hold/",
+  "license": "Apache-2.0",
+  "keywords": [
+    "x402",
+    "refunds",
+    "express-middleware",
+    "micropayments",
+    "usdc",
+    "ai-agents"
+  ]
+}
