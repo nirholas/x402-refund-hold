@@ -26,7 +26,7 @@ Set `PAY_TO_ADDRESS` (Base) and `SOLANA_PAY_TO_ADDRESS` (Solana) in `.env` to re
 | Route | Price | Purpose |
 |---|---|---|
 | `POST /demo/book` | $0.01 | Demo booking behind the hold middleware. Body fields: `name` (default `Agent Guest`), `time` (ISO-8601, default now plus 3h), `partySize` (default 2), `simulate` (`success`, `failure` or `reject`) |
-| `GET /holds/:id` | free | Hold record and ledger entries. 404 `HOLD_NOT_FOUND` for an unknown id |
+| `GET /holds/:id` | free | Current ledger state of a hold (`status` is held, captured, settled, refunded or voided). 404 `HOLD_NOT_FOUND` for an unknown id |
 | `POST /verify` | free | Verify a signed record. Body needs `payload` and `signature`, else 400 `BAD_REQUEST` |
 
 The middleware itself lives in `src/` and is meant to be copied into your own Express app; read it there for the exact options.
