@@ -1,0 +1,23 @@
+{
+  "name": "x402-refund-hold",
+  "owner": {
+    "name": "nirholas"
+  },
+  "description": "The $0.01 refundable-hold pattern for x402 as Express middleware: charge a hold, auto-refund on failure, with a ledger.",
+  "plugins": [
+    {
+      "name": "x402-refund-hold",
+      "source": "./plugins/x402-refund-hold",
+      "description": "The $0.01 refundable-hold pattern for x402 as Express middleware: charge a hold, auto-refund on failure, with a ledger.",
+      "category": "finance",
+      "tags": [
+        "x402",
+        "refunds",
+        "express-middleware",
+        "micropayments",
+        "usdc",
+        "ai-agents"
+      ]
+    }
+  ]
+}
